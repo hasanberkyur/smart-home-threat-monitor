@@ -55,20 +55,62 @@ The project prioritizes signal quality, explainability, and modularity over raw 
     - New connections (src/dst/proto/port)
     - Traffic volume over time windows
 
-### 1.3 Detection Logic (Rule Set)
+### 1.3 Detection Logic (Incident-Class Rule Set)
 
-1. IoT device outbound internet access
-    - Camera sends traffic to public IPs
+The NIDS generates **exactly one primary signal per incident**, chosen deterministically using a fixed precedence order.
+Lower-level detections contribute **features** (context), not additional signals.
 
-2. Suspicious DNS behavior
-    - First-seen domains
-    - High-frequency or random-looking queries
+**Signal Precedence (highest → lowest)**
 
-3. Scanning-like behavior
-    - One host contacts many destinations or ports
+```nginx
+POLICY_VIOLATION
+RECON_ACTIVITY
+SUSPICIOUS_DESTINATION
+ANOMALOUS_BEHAVIOR
+```
 
-4. Unexpected protocol usage
-    - Camera using UDP or uncommon ports
+**Signal Types**
+
+1. **POLICY_VIOLATION**
+   Triggered when a device violates an explicitly defined network policy.
+
+   * IoT device attempts outbound communication to public (non-RFC1918) IPs
+   * IoT device uses forbidden protocols or ports (e.g., SMB, SSH)
+   * Any traffic that crosses a hard isolation boundary
+
+   *Rationale:* Policy violations are binary and actionable, and therefore take highest priority.
+
+2. **RECON_ACTIVITY**
+   Triggered when a host exhibits network reconnaissance behavior.
+
+   * One host contacts many destinations in a short time window
+   * One host probes many ports on one or more targets
+   * ARP or discovery storms exceeding thresholds
+
+   *Rationale:* Reconnaissance has a distinct traffic shape (breadth) and indicates potential lateral movement or scanning.
+
+3. **SUSPICIOUS_DESTINATION**
+   Triggered when a device connects to destinations that are novel or potentially risky.
+
+   * First-seen public IPs, domains, or ASNs
+   * Destinations outside historical or expected patterns
+   * Optional reputation or tracker list hits
+
+   *Rationale:* This signal focuses on *where* traffic goes, independent of whether it is explicitly allowed.
+
+4. **ANOMALOUS_BEHAVIOR**
+   Triggered when traffic significantly deviates from established baselines but does not meet higher-priority criteria.
+
+   * Sudden traffic volume spikes
+   * Unusual protocol or port usage that is not forbidden
+   * Persistent timing or rate anomalies
+
+   *Rationale:* Acts as a controlled catch-all for meaningful deviations that warrant triage without indicating a clear violation.
+
+**Features (Context Only)**
+
+Lower-level observations such as unusual ports, high rates, or first-seen domains are recorded as **features** and attached to the primary signal.
+Features **do not** influence routing or signal selection directly.
 
 ### 1.4 Noise Control
 
@@ -104,14 +146,23 @@ Define a **stable JSON event schema** that all downstream systems consume.
 - Run n8n on PC or server in same LAN
 - Expose webhook endpoint for NIDS events
 
-### 2.2 Input Handling
+### 2.2 Input Handling (n8n as Event Gateway)
+n8n acts as the event gateway between the NIDS and all downstream actions.
 
-- Validate incoming event schema
-- Reject malformed or duplicate events
+**Responsibilities**
+- Validate incoming JSON against the signal schema
+- Normalize fields
+- Apply deduplication / rate limiting
+- Enrich events with routing metadata
+
+**Exit Criteria**
+- Malformed inputs are rejected early
+- Duplicate/noisy repeats are suppressed before any branching or LLM calls
 
 ### 2.3 LLM Integration
 
-- Send structured event + system prompt to LLM
+- Incoming events are first routed by **signal type** in n8n
+- Send structured event to LLM
 - Check the n8n activity before integrating LLM API-keys ([Free models](https://github.com/cheahjs/free-llm-api-resources))
 - LLM outputs strict JSON, not free text
 
