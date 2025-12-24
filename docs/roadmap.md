@@ -112,6 +112,7 @@ Define a **stable JSON event schema** that all downstream systems consume.
 ### 2.3 LLM Integration
 
 - Send structured event + system prompt to LLM
+- Check the n8n activity before integrating LLM API-keys ([Free models](https://github.com/cheahjs/free-llm-api-resources))
 - LLM outputs strict JSON, not free text
 
 - Categorize event:
