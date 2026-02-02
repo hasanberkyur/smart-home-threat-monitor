@@ -1,0 +1,122 @@
+{
+  "ts_start": 1770066840,
+  "ts_end": 1770066900,
+  "subnet": "192.168.X.0/24",
+  "gateway_ip": "192.168.X.1",
+  "devices": {
+    "192.168.X.123": {
+      "ip": "192.168.X.123",
+      "name": "reolink_e330",
+      "role": "iot_camera",
+      "allow_wan": false,
+      "blacklist": [
+        "172.236.213.46"
+      ]
+    },
+    "192.168.X.135": {
+      "ip": "192.168.X.135",
+      "name": "iphone16",
+      "role": "phone",
+      "allow_wan": true,
+      "blacklist": [
+        "172.67.192.215",
+        "104.21.33.216"
+      ]
+    },
+    "192.168.X.100": {
+      "ip": "192.168.X.100",
+      "name": "laptop",
+      "role": "pc",
+      "allow_wan": true,
+      "blacklist": []
+    }
+  },
+  "summary": {
+    "top_flows": [
+      {
+        "src": "192.168.X.123",
+        "dst": "192.168.X.135",
+        "proto": "tcp",
+        "dport": 62333,
+        "pkts": 200,
+        "bytes": 134757,
+        "syn_only": 0
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "192.168.X.123",
+        "proto": "tcp",
+        "dport": 9000,
+        "pkts": 162,
+        "bytes": 11015,
+        "syn_only": 0
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 5222,
+        "pkts": 16,
+        "bytes": 4717,
+        "syn_only": 1
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 8,
+        "bytes": 973,
+        "syn_only": 0
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "1.1.1.1",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 5,
+        "bytes": 700,
+        "syn_only": 0
+      }
+    ],
+    "wan_activity": {
+      "flows_to_public": [
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 5222,
+          "pkts": 16,
+          "bytes": 4717,
+          "syn_only": 1
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 8,
+          "bytes": 973,
+          "syn_only": 0
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "1.1.1.1",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 5,
+          "bytes": 700,
+          "syn_only": 0
+        }
+      ],
+      "new_public_dests": [
+        "1.1.1.1",
+        "203.0.113.16",
+        "203.0.113.16"
+      ]
+    },
+    "local_initiations": [],
+    "scan_indicators": [],
+    "policy_violations": []
+  }
+}

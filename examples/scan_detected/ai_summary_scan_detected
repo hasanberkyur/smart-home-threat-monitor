@@ -1,0 +1,13 @@
+SEVERITY:
+high
+
+SUMMARY:
+The IoT camera (reolink_e330) is exhibiting clear indicators of compromise or malicious behavior. It is actively performing a port scan against a local device (laptop) targeting common vulnerability ports and is violating its "no WAN" policy by communicating with external public IP addresses. This behavior suggests a potential botnet infection attempting lateral movement and command-and-control communication.
+
+EVIDENCE:
+The camera initiated SYN-only connections to 12 distinct ports on the laptop (192.168.X.123), including high-risk services like SSH (22), Telnet (23), SMB (445), and RTSP (554).
+This scanning behavior is highly anomalous for an IoT device, which should primarily function as a server for video feeds, not a client scanning other local endpoints.
+The metrics show a direct violation of the allow_wan=false policy, with the camera sending traffic to external IPs 203.0.113.16 and 203.0.113.16.
+
+RECOMMENDED ACTION:
+Immediately isolate the camera from the network by blocking its MAC address or disconnecting it physically, then inspect the device for compromised firmware or reset it to factory defaults.

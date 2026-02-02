@@ -1,0 +1,331 @@
+{
+  "ts_start": 1770064740,
+  "ts_end": 1770064800,
+  "subnet": "192.168.X.0/24",
+  "gateway_ip": "192.168.X.1",
+  "devices": {
+    "192.168.X.123": {
+      "ip": "192.168.X.123",
+      "name": "reolink_e330",
+      "role": "iot_camera",
+      "allow_wan": false,
+      "blacklist": [
+        "172.236.213.46"
+      ]
+    },
+    "192.168.X.135": {
+      "ip": "192.168.X.135",
+      "name": "iphone16",
+      "role": "phone",
+      "allow_wan": true,
+      "blacklist": [
+        "172.67.192.215",
+        "104.21.33.216"
+      ]
+    },
+    "192.168.X.100": {
+      "ip": "192.168.X.100",
+      "name": "laptop",
+      "role": "pc",
+      "allow_wan": true,
+      "blacklist": []
+    }
+  },
+  "summary": {
+    "top_flows": [
+      {
+        "src": "192.168.X.123",
+        "dst": "192.168.X.135",
+        "proto": "tcp",
+        "dport": 62238,
+        "pkts": 902,
+        "bytes": 548254,
+        "syn_only": 0
+      },
+      {
+        "src": "192.168.X.123",
+        "dst": "192.168.X.135",
+        "proto": "tcp",
+        "dport": 62240,
+        "pkts": 281,
+        "bytes": 165300,
+        "syn_only": 0
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 9000,
+        "pkts": 971,
+        "bytes": 68677,
+        "syn_only": 4
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "1.1.1.1",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 219,
+        "bytes": 41636,
+        "syn_only": 0
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 56,
+        "bytes": 37191,
+        "syn_only": 2
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 46,
+        "bytes": 31205,
+        "syn_only": 2
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 28,
+        "bytes": 27062,
+        "syn_only": 1
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 31,
+        "bytes": 23488,
+        "syn_only": 1
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 51,
+        "bytes": 16667,
+        "syn_only": 1
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 52,
+        "bytes": 10802,
+        "syn_only": 3
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 44,
+        "bytes": 7866,
+        "syn_only": 2
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 45,
+        "bytes": 7621,
+        "syn_only": 2
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 53,
+        "bytes": 7484,
+        "syn_only": 2
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 29,
+        "bytes": 6580,
+        "syn_only": 2
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 42,
+        "bytes": 6168,
+        "syn_only": 1
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 29,
+        "bytes": 5973,
+        "syn_only": 2
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 12,
+        "bytes": 3864,
+        "syn_only": 1
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 22,
+        "bytes": 3565,
+        "syn_only": 1
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 17,
+        "bytes": 3481,
+        "syn_only": 1
+      },
+      {
+        "src": "192.168.X.135",
+        "dst": "203.0.113.16",
+        "proto": "tcp",
+        "dport": 443,
+        "pkts": 15,
+        "bytes": 3154,
+        "syn_only": 1
+      }
+    ],
+    "wan_activity": {
+      "flows_to_public": [
+        {
+          "src": "192.168.X.135",
+          "dst": "1.1.1.1",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 219,
+          "bytes": 41636,
+          "syn_only": 0
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 56,
+          "bytes": 37191,
+          "syn_only": 2
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 53,
+          "bytes": 7484,
+          "syn_only": 2
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 52,
+          "bytes": 10802,
+          "syn_only": 3
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 51,
+          "bytes": 16667,
+          "syn_only": 1
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 46,
+          "bytes": 31205,
+          "syn_only": 2
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 45,
+          "bytes": 7621,
+          "syn_only": 2
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 44,
+          "bytes": 7866,
+          "syn_only": 2
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 42,
+          "bytes": 6168,
+          "syn_only": 1
+        },
+        {
+          "src": "192.168.X.135",
+          "dst": "203.0.113.16",
+          "proto": "tcp",
+          "dport": 443,
+          "pkts": 31,
+          "bytes": 23488,
+          "syn_only": 1
+        }
+      ],
+      "new_public_dests": [
+        "1.1.1.1",
+        "203.0.113.16",
+        "203.0.113.16",
+        "203.0.113.16"
+      ]
+    },
+    "local_initiations": [],
+    "scan_indicators": [],
+    "policy_violations": [
+      {
+        "src": "192.168.X.123",
+        "dst": "172.236.213.46",
+        "proto": "tcp",
+        "dport": 9995,
+        "pkts": 4,
+        "bytes": 256,
+        "reason": "allow_wan=false but contacted public IP; blacklisted destination"
+      }
+    ]
+  }
+}
