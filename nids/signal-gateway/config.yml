@@ -1,0 +1,46 @@
+home_lan:
+  iface: "wlan1"
+  subnet: "192.168.X.0/24"
+  gateway_ip: "192.168.X.1"
+  upstream_if: "wlan0"
+
+devices:
+  "192.168.X.123":
+    name: "reolink_e330"
+    role: "iot_camera"
+    policy:
+      allow_wan: false
+      blacklist:
+        - "172.236.213.46"
+  "192.168.X.135":
+    name: "iphone16"
+    role: "phone"
+    policy:
+      allow_wan: true
+      blacklist:
+        - "154.26.126.190"
+        - "119.105.22.222"
+  "192.168.X.100":
+    name: "laptop"
+    role: "pc"
+    policy:
+      allow_wan: true
+
+defaults:
+  policy:
+    allow_wan: true
+    blacklist: []
+
+windows:
+  aggregate_seconds: 60
+  dedupe_seconds: 600
+
+thresholds:
+  scan_unique_ports: 3
+
+output:
+  jsonl_path: "./telemetry_minute.jsonl"
+  webhook_url: "http://N8N_HOST:5678/webhook/<your-webhook>"
+  webhook_timeout_s: 2
+  top_flows_limit: 20
+  wan_flows_limit: 10
