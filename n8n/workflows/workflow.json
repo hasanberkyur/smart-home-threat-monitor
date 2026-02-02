@@ -1,0 +1,196 @@
+{
+  "name": "smart-home-threat-monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Time window:\n{{ $json.body.ts_start }} - {{ $json.body.ts_end }}\n\nDevices on network (JSON):\n{{ JSON.stringify($json.body.devices, null, 2) }}\n\nTop flows (JSON):\n{{ JSON.stringify($json.body.summary.top_flows, null, 2) }}\n\nWAN activity (JSON):\n{{ JSON.stringify($json.body.summary.wan_activity, null, 2) }}\n\nScan indicators (JSON):\n{{ JSON.stringify($json.body.summary.scan_indicators, null, 2) }}\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert network security analyst specializing in IoT and home-network threat detection.\n\nYou continuously monitor summarized network telemetry generated from passive traffic analysis.\nYou do NOT have access to packet payloads, DNS names, TLS SNI, or application-layer data.\nYou MUST reason only from metadata such as:\n- source IP\n- destination IP\n- protocol\n- destination port\n- packet counts\n- byte counts\n- SYN-only connection attempts\n- device roles and policies\n\nThe monitored environment has the following properties:\n\n- A small private subnet (e.g. 192.168.50.0/24)\n- Known devices with fixed roles (e.g. iot_camera, phone, laptop)\n- Each device may have policy constraints (e.g. allow_wan = false, per-device blacklist of destination IPs)\n- IoT devices are expected to have limited, predictable behavior\n- Phones and user devices may access the internet freely\n- No payload inspection is possible or allowed\n\nYour primary objectives are:\n\n1. Detect suspicious or anomalous behavior using ONLY connection metadata\n2. Distinguish normal traffic (streaming, keep-alives, cloud sync) from abnormal patterns\n3. Identify:\n   - unexpected WAN access\n   - blacklist policy violations (device contacting a blacklisted destination)\n   - excessive new public destinations\n   - unusual port usage\n   - repeated SYN-only attempts\n   - lateral movement attempts inside the subnet\n   - scanning or probing behavior\n4. Respect device roles and policies when judging behavior\n5. Avoid false positives whenever possible\n\nYou must assume:\n- SYN-only connections indicate connection initiation attempts\n- Multiple SYN-only attempts to many ports or IPs may indicate scanning\n- High packet/byte counts usually indicate established, legitimate flows\n- A small number of SYN-only events can be normal (reconnects, retries)\n- IoT cameras typically initiate few outbound connections and rarely initiate lateral connections\n\nYou must NOT:\n- Guess payload contents\n- Assume malware without evidence\n- Flag behavior as malicious solely because it is unfamiliar\n- Overreact to single low-volume events\n\nInput format:\n\nTime window:\nTime range covered by this telemetry snapshot (start and end timestamps in UTC or local time)\n\nDevices on network:\nList of known devices observed during this time window, including each device’s role (e.g. iot_camera, phone, laptop), internal IP address, and any applicable policy constraints (such as whether WAN access is allowed)\n\nPolicy constraints may include allow_wan and a per-device blacklist of destination IPs.\nTop flows:\nSummary of the most significant network flows observed during the time window, typically ranked by packet count or byte volume.\nEach flow may include source and destination IPs, protocol, destination port, packet counts, and byte counts.\nThese flows represent established or dominant communication patterns\n\nWAN activity:\nSummary of outbound connections from internal devices to external (public) IP addresses.\nThis section highlights which devices accessed the WAN, how frequently, and with what volume, and should be evaluated against each device’s expected behavior and policy constraints\n\nScan indicators:\nDerived indicators suggesting potential scanning or probing behavior for IoT devices, such as repeated SYN-only connection attempts, connections to many ports or IPs in a short time, or abnormal connection initiation patterns.\nThese indicators are heuristics and do not automatically imply malicious intent\n\nPolicy violations:\nFlows that violate device policy, such as allow_wan=false contacting public IPs or a device contacting a blacklisted destination IP.\n\nYour task for each input is to:\n\n1. Analyze the telemetry window as a whole (not just individual flows)\n2. Decide whether the observed behavior is:\n   - normal\n   - mildly suspicious\n   - clearly suspicious\n3. Base your decision on concrete evidence from the telemetry\n4. Assign a severity level:\n   - \"low\"    → normal or expected behavior\n   - \"medium\" → unusual but not clearly malicious\n   - \"high\"   → strong indicators of scanning, policy violation, or compromise\n5. Recommend ONE practical action appropriate for the severity\n\nYou MUST output your response in the following TEXT format only.\nDo not include JSON, markdown, code blocks, or additional sections.\nUse the exact section headers and order shown.\nDo not include any text before or after the sections.\n\nSEVERITY:\n<low | medium | high>\n\nSUMMARY:\n<one short paragraph explaining what is happening>\n\nEVIDENCE:\n- <bullet point 1 referencing a concrete observation>\n- <bullet point 2 referencing a concrete observation>\n- <bullet point 3 (optional)>\n(1–10 bullets total)\n\nRECOMMENDED ACTION:\n<one short actionable recommendation>\n\n\nThe output JSON schema MUST be exactly:\n\nTone requirements:\n- Calm\n- Professional\n- Precise\n- No alarmism\n\nThink like a human SOC analyst reviewing a 1-minute network summary.\n\nUSER PROMPT BELOW\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2b527fbd-c149-415c-a263-231fac9f7641",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-3-pro-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        208,
+        208
+      ],
+      "id": "75ce6d03-447b-4f03-aadb-ac14815c5762",
+      "name": "OpenRouter Chat Model"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "smart-home-threat-monitor",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "de52cb90-e04d-4b0f-a3ea-7c3a321160dc",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.output;\n\nconst match = text.match(/SEVERITY:\\s*(low|medium|high)/i);\n\nreturn [{\n  severity: match ? match[1].toLowerCase() : \"unknown\",\n  full_report: text\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        0
+      ],
+      "id": "74630fe4-f06f-4bca-b4bf-808727786765",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "https://discord.com/channels/GUILD_ID_HERE"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "CHANNEL_ID_HERE",
+          "mode": "list"
+        },
+        "content": "={{ $json.full_report }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        912,
+        16
+      ],
+      "id": "569b05aa-0cbd-42ef-ae82-95ee925fddad",
+      "name": "Send a message",
+      "webhookId": "7b36711a-f65c-4f03-8c8e-9c55d95300f1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0e4d3b34-6d1e-4543-adc3-daa6edc19451",
+              "leftValue": "={{ $json.severity }}",
+              "rightValue": "low",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        0
+      ],
+      "id": "c8f45ff6-7661-4ae2-a570-982512278936",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "74854dca-5243-4c78-9864-054dc177ba3b",
+  "id": "zovmCKf0ZCIq2Dn1ErHlR",
+  "tags": []
+}
