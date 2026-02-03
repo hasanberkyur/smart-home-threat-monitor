@@ -74,7 +74,7 @@ Rather than performing deep packet inspection, the pipeline operates strictly on
 - Known device roles (e.g. IoT camera vs user device)
 - Device-specific policy expectations (e.g. WAN allowed, blacklists)
 
-Here are some [**example telemetry summaries**](tests/telemetry_window_with_scan.json).
+Here are some [**example telemetry summaries**](examples/).
 
 The telemetry logic was implemented using [*signal_gateway.py*](nids/signal-gateway/signal_gateway.py) and supporting [*config.yml*](nids/signal-gateway/config.yml), which continuously observe traffic passing through the Raspberry Pi and distill raw observations into **compact**, **LLM-friendly** summaries. These summaries intentionally trade raw detail for signal clarity, allowing later stages to reason about behavior over a defined time window instead of reacting to individual packets or connections.
 
